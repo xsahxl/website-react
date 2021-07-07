@@ -1,0 +1,34 @@
+edition: 1.0.0
+access: 'default'
+
+services:
+  website-starter:
+    component: devsapp/website
+    actions:
+      pre-deploy:
+        - run: npm install
+          path: ./
+        - run: npm run build
+          path: ./
+    props:
+      bucket: 'shl-website-react-for-delete'
+      src:
+        codeUri: ./
+        publishDir: ./build
+        index: index.html
+      region: cn-hangzhou
+      hosts:
+        - host: auto
+      customDomain: ${rest-api.output.customDomain}
+      project: shl-delete-01
+  rest-api:
+    component: devsapp/jamstack-api
+    actions:
+      pre-deploy:
+        - run: npm i
+          path: functions
+    props:
+      region: cn-hangzhou
+      sourceCode: functions
+      route:
+        - /user
